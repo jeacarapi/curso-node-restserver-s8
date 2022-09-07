@@ -2,7 +2,7 @@ const { response, request } = require ('express')
 
 
 
-const userGet = (req, res = response) => {
+const userGet = (req = request, res = response) => {
     
     //aqui se pueden establecer valores por defecto
     const { q, 
@@ -22,7 +22,7 @@ const userGet = (req, res = response) => {
     })
 }
 
-const userPost = (req, res = response) => {
+const userPost = (req = request, res = response) => {
     
     const { nombre, e_mail } = req.body;
     res.json({
@@ -34,7 +34,7 @@ const userPost = (req, res = response) => {
 }
 
 
-const userPut = (req, res = response) => {
+const userPut = (req = request, res = response) => {
     const { id } = req.params;
 
     res.json({
@@ -44,14 +44,14 @@ const userPut = (req, res = response) => {
     })
 }
 
-const userDelete = (req, res = response) => {
+const userDelete = (req = request, res = response) => {
     res.json({
         
         msg: 'delete API - controller'
     })
 }
 
-const userPatch = (req, res = response) => {
+const userPatch = (req = request, res = response) => {
     res.json({
         
         msg: 'patch API - controller'
