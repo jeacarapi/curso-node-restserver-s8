@@ -1,53 +1,103 @@
-const { response, request } = require ('express')
+const { response, request } = require ('express');
+// User con mayuscula permitirá crear instancias 
+
+const bcryptjs = require ('bcryptjs');
+
+const User = require ('../models/user');
 
 
 
-const userGet = (req = request, res = response) => {
+
+const userGet = async (req = request, res = response) => {
     
     //aqui se pueden establecer valores por defecto
-    const { q, 
-            nombre = 'No name', 
-            apikey, 
-            page = 1, 
-            limit 
-        } = req.query;
+    // const { q, 
+    //         nombre = 'No name', 
+    //         apikey, 
+    //         page = 1, 
+    //         limit 
+    //     } = req.query;
+    const { limite = 5, desde = 0 } =req.query; 
+    
+    const  query  = { status: true };
+
+    // const users = await User.find( query ) // .find engloba a todos los usuarios, al llamar con GET saldran TODOS. CUIDADO SI SE TIENE MUCHOS USUARIOS ESTE PROCESO PUEDE TARDAR
+    //     .skip (desde) // si no funciona probar .skip(Number(desde))
+    //     .limit (limite);// .limit (Number(limite)); // en el video el profe debe poner NUMBER para que funcione. 
+
+
+    // const total = await User.countDocuments( query );
+
+    const [ total, users] = await Promise.all([
+        User.countDocuments( query ),
+        User.find( query )
+        .skip (desde)
+        .limit (limite)
+    ])
+    
     res.json({
         
-        msg: 'get API - controller',
-        q,
-        nombre, 
-        apikey,
-        page,
-        limit
+        // msg: 'get API - controller',
+        // q,
+        // nombre, 
+        // apikey,
+        // page,
+        // limit
+
+
+        total,
+        users
+
+        // resp
     })
 }
 
-const userPost = (req = request, res = response) => {
+
+
+
+const userPost = async (req = request, res = response) => {
     
-    const { nombre, e_mail } = req.body;
+    //body de postman, donde ingresamos informacion como test
+    const { nombre, email, password, rol } = req.body;
+    //creación de instancia 
+    const user = new User( {nombre, email, password, rol} );
+    
+    await user.save();
+
     res.json({
         
         msg: 'post API - controller',
-        nombre,
-        e_mail
+        user
     })
 }
 
+const userPut = async (req = request, res = response) => {
+    const { id } = req.params;
+    const {_id, password, google, email,...resto} = req.body;
 
-const userPut = (req = request, res = response) => {
+    if ( password ){
+    const salt = bcryptjs.genSaltSync();
+    resto.password = bcryptjs.hashSync( password, salt );
+
+    }
+
+    const user = await User.findByIdAndUpdate( id, resto );
+
+    res.json(user)
+}
+
+const userDelete = async (req = request, res = response) => {
+
     const { id } = req.params;
 
+    // borrado fisico
+    // const user = await User.findByIdAndDelete( id );
+    
+    const user = await User.findByIdAndUpdate( id, { status:false})
+    
     res.json({
         
-        msg: 'put API - controller',
-        id
-    })
-}
-
-const userDelete = (req = request, res = response) => {
-    res.json({
-        
-        msg: 'delete API - controller'
+        user
     })
 }
 
@@ -62,5 +112,5 @@ module.exports = {
     userPost, 
     userPut,
     userDelete, 
-    userPatch
+    userPatch, 
 }
