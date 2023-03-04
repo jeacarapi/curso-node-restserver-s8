@@ -86,27 +86,30 @@ const userPut = async (req = request, res = response) => {
     res.json(user)
 }
 
-const userDelete = async (req = request, res = response) => {
-
-    const { id } = req.params;
-
-    // borrado fisico
-    // const user = await User.findByIdAndDelete( id );
-    
-    const user = await User.findByIdAndUpdate( id, { status:false})
-    
-    res.json({
-        
-        user
-    })
-}
-
 const userPatch = (req = request, res = response) => {
     res.json({
         
         msg: 'patch API - controller'
     })
 }
+
+const userDelete = async (req = request, res = response) => {
+
+    const { id } = req.params;
+
+    // const uid = req.uid;
+
+    // borrado fisico
+    // const user = await User.findByIdAndDelete( id );
+    
+    const user = await User.findByIdAndUpdate( id, { status:false})
+    //const userAutenticado = req.user;
+    //res.json({ user, userAutenticado })
+    res.json({ user})
+    
+}
+
+
 module.exports = {
     userGet, 
     userPost, 

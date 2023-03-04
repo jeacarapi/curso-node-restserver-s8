@@ -37,7 +37,7 @@ const UserSchema = Schema ({
     },
 
     image: {
-        type: String,
+        type: String
     }, 
 
     rol: {
@@ -61,7 +61,9 @@ const UserSchema = Schema ({
 }); 
 
 UserSchema.methods.toJSON = function (){
-    const { __v, password, ...user} = this.toObject();
+    const { __v, password, _id,...user} = this.toObject();
+    user.uid= _id; // CAMBIO DE NOMBRE DE _ID A UID
+    // const { __v, password, ...user} = this.toObject();
     return user;
 }
 
