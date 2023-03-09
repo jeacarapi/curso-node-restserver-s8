@@ -60,14 +60,14 @@ const googleSingIn = async(req, res= response) =>{
     const {id_token} = req.body;
     
     try{
-        const {nombre, image, email} = await googleVerify(id_token);
+        const {nombre,img, email} = await googleVerify(id_token);
         let user = await User.findOne({email});
 
         if (!user ){
             const data ={
                 nombre, 
                 password: '142341233',
-                image,
+                img,
                 email, 
                 google:true, 
                 rol: 'USER_ROLE'

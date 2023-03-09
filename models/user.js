@@ -36,7 +36,7 @@ const UserSchema = Schema ({
         required: [true, 'Este campo (password) es obligatorio'], 
     },
 
-    image: {
+    img: {
         type: String
     }, 
 
